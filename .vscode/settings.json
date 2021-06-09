@@ -1,0 +1,7 @@
+{
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "git.ignoreLimitWarning": true
+}
