@@ -1,18 +1,17 @@
 const csv = require('csv');
 const parse = require('csv-parse/lib/sync');
 const stringify = require('csv-stringify/lib/sync');
+const path = require('path');
+var gbk = require('gbk');
 
 const fs = require('fs');
 
 const { parse: parseDate, format } = require('date-fns');
 
-let fileStr = fs.readFileSync(
-    path.resolve(__dirname, '../alipay_record_20210530_2331_1.csv'),
-    {
-        encoding: 'utf8',
-    }
+let fileStr = gbk.toString(
+    'utf-8',
+    fs.readFileSync(path.resolve(__dirname, '../csv/alipay.csv'))
 );
-
 fileStr = fileStr.slice(
     fileStr.indexOf('-\r\n') + 3,
     fileStr.lastIndexOf('\r\n-')
@@ -82,6 +81,6 @@ var qif = require('qif');
 
 qif.writeToFile(
     { cash: transferAlipayFile() },
-    './alipay-homebank.qif',
+    './qif/alipay-homebank.qif',
     () => {}
 );

@@ -8,7 +8,7 @@ const fs = require('fs');
 const { parse: parseDate, format } = require('date-fns');
 
 let fileStr = fs.readFileSync(
-    path.resolve(__dirname, '../csv/微信支付账单(20210524-20210530).csv'),
+    path.resolve(__dirname, '../csv/微信支付账单.csv'),
     {
         encoding: 'utf8',
     }
