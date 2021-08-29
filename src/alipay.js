@@ -36,6 +36,10 @@ const getAlipayCategory = (o) => {
         return '购物';
     } else if (commodity.includes('相互宝') || commodity.includes('保')) {
         return '保险';
+    } else if (tradePatner.includes('菜鸟') || commodity.includes('快递')) {
+        return '杂项'
+    } else if (tradePatner.includes('旅') || commodity.includes('门票')) {
+        return '旅游'
     } else {
         return '餐饮';
     }
@@ -53,7 +57,7 @@ const transferAlipayFile = () => {
     const filterRecords = newFile.filter((o) => {
         return (
             o['交易对方'] !== '天弘基金管理有限公司' &&
-            o['交易状态'] !== '交易关闭'
+            o['交易状态'] !== '交易关闭' && !o['交易对方'].includes('基金')
         );
     });
 

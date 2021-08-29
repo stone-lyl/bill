@@ -15,12 +15,10 @@ let fileStr = fs.readFileSync(
 );
 
 fileStr = fileStr.slice(fileStr.indexOf('交易时间'));
-console.log(fileStr);
 const fileArr = parse(fileStr, {
     columns: true,
     skip_empty_lines: true,
 });
-console.log(fileArr);
 
 const getWXCategory = (o) => {
     const commodity = o['商品'];
@@ -34,28 +32,37 @@ const getWXCategory = (o) => {
 };
 
 const transferWeixinFile = () => {
-    const homebankRecords = fileArr.map((o, index) => {
-        const isOutcome = o['收/支'] === '支出';
-        let memo = `${o['交易类型']} - ${o['商品']}`;
-        if (o['备注'] !== '/') {
-            memo += '：' + o['备注'];
-        }
-        console.log(o);
-        console.log(index);
-        console.log('----');
-        return {
-            amount: o['金额(元)'].replace('¥', isOutcome ? '-' : ''),
-            memo,
-            category: getWXCategory(o),
-            payment: 0,
-            payee: o['交易对方'],
-            date: format(new Date(o['交易时间'].substring(0, 10)), 'd/M/yyyy'),
-            info: '',
-            tags: '',
-        };
-    });
+    const homebankRecords = fileArr
+        .filter((o) => {
+            return o['交易对方'] !== '理财通';
+        })
+        .map((o, index) => {
+            const isOutcome = o['收/支'] === '支出';
+            let memo = `${o['交易类型']} - ${o['商品']}`;
+            if (o['备注'] !== '/') {
+                memo += '：' + o['备注'];
+            }
+            return {
+                amount: o['金额(元)'].replace('¥', isOutcome ? '-' : ''),
+                memo,
+                category: getWXCategory(o),
+                payment: 0,
+                payee: o['交易对方'],
+                date: format(
+                    new Date(o['交易时间'].substring(0, 10)),
+                    'd/M/yyyy'
+                ),
+                info: '',
+                tags: '',
+            };
+        });
+    console.log(homebankRecords);
     return homebankRecords;
 };
 var qif = require('qif');
 
-qif.writeToFile({ cash: transferWeixinFile() }, './qif/weixin-homebank.qif');
+qif.writeToFile(
+    { cash: transferWeixinFile() },
+    './qif/weixin-homebank.qif',
+    () => {}
+);
