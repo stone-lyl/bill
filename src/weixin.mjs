@@ -1,14 +1,12 @@
-const csv = require('csv');
-const parse = require('csv-parse/lib/sync');
-const stringify = require('csv-stringify/lib/sync');
-const path = require('path');
-
-const fs = require('fs');
-
-const { parse: parseDate, format } = require('date-fns');
+import parse from 'csv-parse/lib/sync.js';
+import path from 'path';
+import fs from 'fs';
+import { format } from 'date-fns';
+import qif from 'qif';
+import { getCategory, filterUnusedRecords } from './list.mjs';
 
 let fileStr = fs.readFileSync(
-    path.resolve(__dirname, '../csv/微信支付账单.csv'),
+    path.resolve(path.resolve(process.cwd()), './csv/微信支付账单.csv'),
     {
         encoding: 'utf8',
     }
@@ -20,23 +18,15 @@ const fileArr = parse(fileStr, {
     skip_empty_lines: true,
 });
 
-const getWXCategory = (o) => {
-    const commodity = o['商品'];
-    if (commodity.includes('车')) {
-        return '出行交通';
-    } else if (commodity.includes('转账备注') || commodity === '/') {
-        return '人情往来';
-    } else {
-        return '餐饮';
-    }
-};
-
 const transferWeixinFile = () => {
     const homebankRecords = fileArr
         .filter((o) => {
-            return o['交易对方'] !== '理财通';
+            return (
+                o['交易对方'] !== '理财通' &&
+                filterUnusedRecords(o['商品'], o['交易对方'])
+            );
         })
-        .map((o, index) => {
+        .map((o) => {
             const isOutcome = o['收/支'] === '支出';
             let memo = `${o['交易类型']} - ${o['商品']}`;
             if (o['备注'] !== '/') {
@@ -45,7 +35,7 @@ const transferWeixinFile = () => {
             return {
                 amount: o['金额(元)'].replace('¥', isOutcome ? '-' : ''),
                 memo,
-                category: getWXCategory(o),
+                category: getCategory(o['商品'], o['交易对方']),
                 payment: 0,
                 payee: o['交易对方'],
                 date: format(
@@ -59,7 +49,6 @@ const transferWeixinFile = () => {
     console.log(homebankRecords);
     return homebankRecords;
 };
-var qif = require('qif');
 
 qif.writeToFile(
     { cash: transferWeixinFile() },
