@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "F5",
-    "alipay": "node ./src/alipay.js",
-    "weixin": "node ./src/weixin.js"
+    "alipay": "node ./src/alipay.mjs",
+    "weixin": "node ./src/weixin.mjs"
   },
   "author": "stone",
   "license": "ISC",
@@ -17,5 +17,8 @@
     "date-fns": "^2.21.3",
     "gbk": "^0.1.0",
     "qif": "^0.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0"
   }
 }
