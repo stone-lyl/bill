@@ -39,8 +39,8 @@ const transferWeixinFile = () => {
                 payment: 0,
                 payee: o['交易对方'],
                 date: format(
-                    new Date(o['交易时间'].substring(0, 10)),
-                    'd/M/yyyy'
+                  new Date(o['交易时间']),
+                  'MM-dd-yyyy'
                 ),
                 info: '',
                 tags: '',

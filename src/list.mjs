@@ -17,7 +17,7 @@ alipayList.set('转账备注', '人情来往');
 alipayList.set('/', '人情来往');
 alipayList.set('default', '餐饮');
 
-export const filterList = ['基金', '银行', '花呗', '还款', '红包', '理财通', '钉钉群收款', '十分爱心'];
+export const filterList = ['基金', '银行', '花呗', '还款', '红包', '理财通', '钉钉群收款', '十分爱心', '余额宝'];
 
 export const filterUnusedRecords = (tradePatner, commodity) => {
     const result = filterList.filter((filter) =>
