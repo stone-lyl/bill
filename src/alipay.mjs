@@ -35,6 +35,9 @@ const transferAlipayFile = () => {
     });
 
     const getAlipayCategory = (o) => {
+        console.log(o['交易对方'], o['商品名称']);
+        if (o['交易对方'] === '淘宝买菜') return '餐饮';
+        if (o['商品名称']?.includes('电影') || o['交易对方']?.includes('电影')) return '娱乐';
         if (o['交易来源地'] === '淘宝') return '购物';
         return getCategory(o['商品名称'], o['交易对方']);
     };
@@ -54,12 +57,12 @@ const transferAlipayFile = () => {
             tags: '',
         };
     });
-    console.warn(homebankRecords, '支付宝账单转换成功!!!');
     return homebankRecords;
 };
 
 qif.writeToFile(
     { cash: transferAlipayFile() },
     './qif/alipay-homebank.qif',
-    () => {}
+    () => {
+    }
 );
