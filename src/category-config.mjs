@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 /**
  * Configuration file for category mappings
  * This file contains mappings for transaction categories
@@ -25,8 +28,6 @@ export const defaultCategoryMap = new Map([
 export const loadPrivateCategoryMap = () => {
     try {
         // Try to load private mappings from a JSON file
-        const fs = require('fs');
-        const path = require('path');
         const privatePath = path.resolve(process.cwd(), './config/private-categories.json');
 
         if (fs.existsSync(privatePath)) {

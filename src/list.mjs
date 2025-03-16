@@ -55,5 +55,5 @@ export const getCategory = async (tradePatner, commodity) => {
         }
     }
 
-    return '其他';
+    return result;
 };
