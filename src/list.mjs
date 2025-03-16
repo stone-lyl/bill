@@ -38,7 +38,6 @@ const getRuleBasedCategory = (tradePatner, commodity) => {
  * @returns {Promise<string>} The category
  */
 export const getCategory = async (tradePatner, commodity) => {
-    console.log(`Using rule-based categorization for "${tradePatner} - ${commodity}"`);
     const result = getRuleBasedCategory(tradePatner, commodity);
     if (result === '其他') {
         try {

@@ -29,13 +29,12 @@ let memo = (o) => `${o['交易对方']} - ${o['商品名称']}`;
  * @returns {Promise<string>} - The category
  */
 const getAlipayCategory = async (o) => {
-    console.log(o['交易对方'], o['商品名称']);
-    
+
     // Special case rules that take precedence
     if (o['交易对方'] === '淘宝买菜') return '餐饮';
     if (o['商品名称']?.includes('电影') || o['交易对方']?.includes('电影')) return '娱乐';
     if (o['交易来源地'] === '淘宝') return '购物';
-    
+
     // Use AI-powered category detection
     try {
         return await getCategory(o['商品名称'], o['交易对方']);
@@ -63,7 +62,6 @@ const transferAlipayFile = async () => {
     for (const o of filterRecords) {
         const isOutcome = o['收/支'] === '支出';
         const category = await getAlipayCategory(o);
-        
         homebankRecords.push({
             amount: (isOutcome ? '-' : '') + o['金额（元）'],
             memo: memo(o),
@@ -78,7 +76,7 @@ const transferAlipayFile = async () => {
             tags: '',
         });
     }
-    
+
     return homebankRecords;
 };
 
@@ -86,6 +84,7 @@ const transferAlipayFile = async () => {
 const main = async () => {
     try {
         const records = await transferAlipayFile();
+        console.log('Alipay result:', records);
         qif.writeToFile(
             { cash: records },
             './qif/alipay-homebank.qif',
