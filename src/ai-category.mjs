@@ -44,7 +44,7 @@ export async function predictCategory(tradePartner, commodity) {
                 'Authorization': `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                model: 'deepseek-v3',
+                model: 'openai/deepseek-v3',
                 messages: [
                     {
                         role: 'user',
