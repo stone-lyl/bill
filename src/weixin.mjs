@@ -18,40 +18,43 @@ const fileArr = parse(fileStr, {
     skip_empty_lines: true,
 });
 
-const transferWeixinFile = () => {
-    const homebankRecords = fileArr
+const transferWeixinFile = async () => {
+    const homebankRecords = await fileArr
         .filter((o) => {
             return (
                 o['交易对方'] !== '理财通' &&
                 filterUnusedRecords(o['商品'], o['交易对方'])
             );
         })
-        .map((o) => {
+        .map(async (o) => {
             const isOutcome = o['收/支'] === '支出';
             let memo = `${o['交易类型']} - ${o['商品']}`;
             if (o['备注'] !== '/') {
                 memo += '：' + o['备注'];
             }
+            const category = await getCategory(o['商品'], o['交易对方']);
             return {
                 amount: o['金额(元)'].replace('¥', isOutcome ? '-' : ''),
                 memo,
-                category: getCategory(o['商品'], o['交易对方']),
+                category,
                 payment: 0,
                 payee: o['交易对方'],
                 date: format(
-                  new Date(o['交易时间']),
-                  'MM-dd-yyyy'
+                    new Date(o['交易时间']),
+                    'MM-dd-yyyy'
                 ),
                 info: '',
                 tags: '',
             };
         });
-    console.log(homebankRecords);
-    return homebankRecords;
+    const homebankRecordsResult = await Promise.all(homebankRecords);
+    console.log(homebankRecordsResult);
+
+    return homebankRecordsResult;
 };
 
 qif.writeToFile(
-    { cash: transferWeixinFile() },
+    { cash: await transferWeixinFile() },
     './qif/weixin-homebank.qif',
-    () => {}
+    () => { }
 );
