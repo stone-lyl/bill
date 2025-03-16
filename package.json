@@ -1,24 +1,27 @@
 {
-  "name": "bill",
-  "version": "1.0.0",
-  "description": "transfer bills",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "F5",
-    "alipay": "node ./src/alipay.mjs",
-    "weixin": "node ./src/weixin.mjs"
-  },
-  "author": "stone",
-  "license": "ISC",
-  "dependencies": {
-    "csv": "^5.5.0",
-    "csv-parser": "^3.0.0",
-    "date-fns": "^2.21.3",
-    "gbk": "^0.1.0",
-    "qif": "^0.0.2"
-  },
-  "devDependencies": {
-    "eslint": "^7.32.0"
-  }
+    "name": "bill",
+    "version": "1.0.0",
+    "description": "transfer bills",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "F5",
+        "alipay": "node ./src/alipay.mjs",
+        "weixin": "node ./src/weixin.mjs"
+    },
+    "author": "stone",
+    "license": "ISC",
+    "dependencies": {
+        "csv": "^5.5.0",
+        "csv-parser": "^3.0.0",
+        "date-fns": "^2.21.3",
+        "dotenv": "^16.3.1",
+        "gbk": "^0.1.0",
+        "node-fetch": "^3.3.2",
+        "qif": "^0.0.2"
+    },
+    "devDependencies": {
+        "eslint": "^7.32.0"
+    },
+    "type": "module"
 }

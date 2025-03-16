@@ -1,23 +1,8 @@
-export const alipayList = new Map();
-alipayList.set('车', '交通出行');
-alipayList.set('出行', '交通出行');
-alipayList.set('手机充值', '话费');
-alipayList.set('相互宝', '保险');
-alipayList.set('保', '保险');
-alipayList.set('菜鸟', '杂项');
-alipayList.set('快递', '杂项');
-alipayList.set('旅', '旅游');
-alipayList.set('门票', '旅游');
-alipayList.set('爱心', '捐赠');
-alipayList.set('克松', '交通出行');
-alipayList.set('地铁', '交通出行');
-alipayList.set('朱涛', '生活费');
-alipayList.set('超市', '购物');
-alipayList.set('转账备注', '人情来往');
-alipayList.set('/', '人情来往');
-alipayList.set('default', '餐饮');
+import { getCombinedCategoryMap, filterList } from './category-config.mjs';
+import { predictCategory } from './ai-category.mjs';
 
-export const filterList = ['基金', '银行', '花呗', '还款', '红包', '理财通', '钉钉群收款', '十分爱心', '余额宝'];
+// Get the combined category map (default + private)
+export const alipayList = getCombinedCategoryMap();
 
 export const filterUnusedRecords = (tradePatner, commodity) => {
     const result = filterList.filter((filter) =>
@@ -29,19 +14,46 @@ export const filterUnusedRecords = (tradePatner, commodity) => {
 const keywords = Array.from(alipayList.keys());
 
 /**
- *
- * @param tradePatner 商品对象
- * @param commodity 商品名称
- * @returns string 类型
+ * Gets the category for a transaction using rule-based matching
+ * @param {string} tradePatner - The trade partner
+ * @param {string} commodity - The commodity or description
+ * @returns {string} The matched category
  */
-export const getCategory = (tradePatner, commodity) => {
+const getRuleBasedCategory = (tradePatner, commodity) => {
     if (commodity === undefined || tradePatner === undefined) {
-        console.warn(commodity, tradePatner, '该交易美元名称和对象!!!');
+        console.warn(commodity, tradePatner, '该交易没有名称和对象!!!');
         return 'error';
     }
 
     const matched = keywords.find((keyword) =>
         `${tradePatner} - ${commodity}`.includes(keyword)
     );
-    return alipayList.get(matched) || '餐饮';
+    return alipayList.get(matched) || '其他';
+};
+
+/**
+ * Gets the category for a transaction, using AI if available, falling back to rule-based matching
+ * @param {string} tradePatner - The trade partner
+ * @param {string} commodity - The commodity or description
+ * @returns {Promise<string>} The category
+ */
+export const getCategory = async (tradePatner, commodity) => {
+    console.log(`Using rule-based categorization for "${tradePatner} - ${commodity}"`);
+    const result = getRuleBasedCategory(tradePatner, commodity);
+    if (result === '其他') {
+        try {
+            // Try to get category using AI
+            const aiCategory = await predictCategory(tradePatner, commodity);
+
+            // If AI returned a valid category, use it
+            if (aiCategory) {
+                console.log(`AI categorized "${tradePatner} - ${commodity}" as "${aiCategory}"`);
+                return aiCategory;
+            }
+        } catch (error) {
+            console.error('Error using AI for category prediction:', error);
+        }
+    }
+
+    return '其他';
 };

@@ -22,7 +22,31 @@ const fileArr = parse(fileStr, {
 
 let memo = (o) => `${o['交易对方']} - ${o['商品名称']}`;
 
-const transferAlipayFile = () => {
+/**
+ * Determines the category for an Alipay transaction
+ * Uses AI categorization with fallback to rule-based matching
+ * @param {Object} o - The transaction object
+ * @returns {Promise<string>} - The category
+ */
+const getAlipayCategory = async (o) => {
+    console.log(o['交易对方'], o['商品名称']);
+    
+    // Special case rules that take precedence
+    if (o['交易对方'] === '淘宝买菜') return '餐饮';
+    if (o['商品名称']?.includes('电影') || o['交易对方']?.includes('电影')) return '娱乐';
+    if (o['交易来源地'] === '淘宝') return '购物';
+    
+    // Use AI-powered category detection
+    try {
+        return await getCategory(o['商品名称'], o['交易对方']);
+    } catch (error) {
+        console.error('Error getting category:', error);
+        // Fallback to '购物' as requested when AI fails
+        return '购物';
+    }
+};
+
+const transferAlipayFile = async () => {
     const newFile = fileArr.map((o) => {
         let newObj = {};
         for (const [key, value] of Object.entries(o)) {
@@ -34,19 +58,16 @@ const transferAlipayFile = () => {
         return filterUnusedRecords(o['商品名称'], o['交易对方']);
     });
 
-    const getAlipayCategory = (o) => {
-        console.log(o['交易对方'], o['商品名称']);
-        if (o['交易对方'] === '淘宝买菜') return '餐饮';
-        if (o['商品名称']?.includes('电影') || o['交易对方']?.includes('电影')) return '娱乐';
-        if (o['交易来源地'] === '淘宝') return '购物';
-        return getCategory(o['商品名称'], o['交易对方']);
-    };
-    const homebankRecords = filterRecords.map((o) => {
+    // Process records with category detection
+    const homebankRecords = [];
+    for (const o of filterRecords) {
         const isOutcome = o['收/支'] === '支出';
-        return {
+        const category = await getAlipayCategory(o);
+        
+        homebankRecords.push({
             amount: (isOutcome ? '-' : '') + o['金额（元）'],
             memo: memo(o),
-            category: getAlipayCategory(o),
+            category: category,
             payment: 0,
             payee: o['交易对方'],
             date: format(
@@ -55,14 +76,27 @@ const transferAlipayFile = () => {
             ),
             info: '',
             tags: '',
-        };
-    });
+        });
+    }
+    
     return homebankRecords;
 };
 
-qif.writeToFile(
-    { cash: transferAlipayFile() },
-    './qif/alipay-homebank.qif',
-    () => {
+// Main execution
+const main = async () => {
+    try {
+        const records = await transferAlipayFile();
+        qif.writeToFile(
+            { cash: records },
+            './qif/alipay-homebank.qif',
+            () => {
+                console.log('Successfully converted Alipay records to QIF format');
+            }
+        );
+    } catch (error) {
+        console.error('Error processing Alipay file:', error);
     }
-);
+};
+
+// Run the main function
+main();
