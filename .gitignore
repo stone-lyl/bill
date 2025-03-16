@@ -134,3 +134,10 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# Private category mappings
+private/*
+
+# DeepSeek API credentials
+.env
+.env.local
+.aider*
