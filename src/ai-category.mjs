@@ -1,8 +1,14 @@
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
 // Load environment variables
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '..');
+
+dotenv.config({ path: path.resolve(rootDir, '.env.local') });
 
 // Get API key and URL from environment variables
 const API_KEY = process.env.DEEPSEEK_API_KEY;
