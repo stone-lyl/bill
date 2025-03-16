@@ -48,7 +48,7 @@ const transferWeixinFile = async () => {
             };
         });
     const homebankRecordsResult = await Promise.all(homebankRecords);
-    console.log(homebankRecordsResult);
+    console.log('Weixin result:', homebankRecordsResult);
 
     return homebankRecordsResult;
 };

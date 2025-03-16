@@ -30,9 +30,10 @@ export async function predictCategory(tradePartner, commodity) {
 
         // Validate the category is one of the expected values
         const validCategories = [
-            '餐饮', '购物', '交通出行', '话费', '保险',
-            '杂项', '旅游', '捐赠', '生活费', '人情来往（支出）', '娱乐', '个人护理',
-            '生活用品', '电子产品', '人情收入（收入）', '学习（书籍，订阅服务）', '运动'
+            '交通出行', '话费', '保险',
+            '旅游', '捐赠', '生活费', '人情来往（支出）', '娱乐', '个人护理',
+            '生活用品', '电子产品', '人情收入（收入）', '学习（书籍，订阅服务）', '运动',
+            '餐饮', '购物'
         ];
 
         // Create a prompt template
@@ -48,7 +49,7 @@ export async function predictCategory(tradePartner, commodity) {
 
         // Create the model
         const model = new ChatOpenAI({
-            modelName: "deepseek-chat",
+            modelName: "gemini-2.0-flash-latest",
             openAIApiKey: API_KEY,
             temperature: 0.1,
             maxTokens: 80,
