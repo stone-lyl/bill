@@ -35,13 +35,12 @@ const getAlipayCategory = async (o) => {
     if (o['商品名称']?.includes('电影') || o['交易对方']?.includes('电影')) return '娱乐';
     if (o['交易来源地'] === '淘宝') return '购物';
 
-    // Use AI-powered category detection
     try {
         return await getCategory(o['商品名称'], o['交易对方']);
     } catch (error) {
         console.error('Error getting category:', error);
-        // Fallback to '购物' as requested when AI fails
-        return '购物';
+        // Fallback to '其他' when AI fails
+        return '其他';
     }
 };
 
