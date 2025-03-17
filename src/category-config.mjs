@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { personalCategories } from '../private/categories.mjs';
 
 /**
  * Configuration file for category mappings
@@ -23,24 +22,15 @@ export const defaultCategoryMap = new Map([
     ['转账备注', '人情来往'],
 ]);
 
-// Private category mappings - these will be loaded from a JSON file
-// This allows users to keep their private mappings separate and secure
+// Load private category mappings from a private categories file
 export const loadPrivateCategoryMap = () => {
     try {
-        // Try to load private mappings from a JSON file
-        const privatePath = path.resolve(process.cwd(), './config/private-categories.json');
+        const privateCategories = new Map();
+        personalCategories.forEach((value, key) => {
+            privateCategories.set(key, value);
+        });
 
-        if (fs.existsSync(privatePath)) {
-            const privateData = JSON.parse(fs.readFileSync(privatePath, 'utf8'));
-
-            // Convert the JSON object to a Map
-            const privateMap = new Map();
-            for (const [key, value] of Object.entries(privateData)) {
-                privateMap.set(key, value);
-            }
-
-            return privateMap;
-        }
+        return privateCategories;
     } catch (error) {
         console.warn('Failed to load private category mappings:', error.message);
     }
@@ -63,4 +53,4 @@ export const getCombinedCategoryMap = () => {
 };
 
 // Filter list for transactions to be excluded
-export const filterList = ['基金', '银行', '花呗', '还款', '红包', '理财通', '钉钉群收款', '十分爱心', '余额宝'];
+export const filterList = ['基金', '银行', '花呗', '还款', '红包', '理财通', '钉钉群收款', '十分爱心', '余额宝', '零钱'];

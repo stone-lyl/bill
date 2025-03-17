@@ -3,6 +3,7 @@ import { PromptTemplate } from "@langchain/core/prompts";
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { validCategories } from '../private/categories.mjs';
 
 // Load environment variables
 const __filename = fileURLToPath(import.meta.url);
@@ -28,31 +29,23 @@ export async function predictCategory(tradePartner, commodity) {
             return null;
         }
 
-        // Validate the category is one of the expected values
-        const validCategories = [
-            '交通出行', '话费', '保险',
-            '旅游', '捐赠', '生活费', '人情来往（支出）', '娱乐', '个人护理',
-            '生活用品', '电子产品', '人情收入（收入）', '学习（书籍，订阅服务）', '运动',
-            '餐饮', '购物'
-        ];
-
         // Create a prompt template
         const promptTemplate = PromptTemplate.fromTemplate(`
-请将以下交易信息分类到最合适的一个类别中:
-交易对方: {tradePartner}
-商品名称: {commodity}
-
-可选类别: {categories}
+请通过交易对方和商品名称，预测交易的类别，
+预测的范围越小越好，如一项物品既可以是 '买菜和水果', 也可以是 '餐饮',还可以是 '购物', 那请预测 '买菜和水果'。
+交易对方: ${tradePartner}
+商品名称: ${commodity}
+可选类别: ${validCategories.join(', ')}
 
 只需回复一个最合适的类别名称，不要包含其他内容。
         `);
 
         // Create the model
         const model = new ChatOpenAI({
-            modelName: "gemini-2.0-flash-latest",
+            modelName: "gemini-2.0-flash",
             openAIApiKey: API_KEY,
             temperature: 0.1,
-            maxTokens: 80,
+            maxTokens: 500,
             configuration: {
                 baseURL: API_BASE_URL,
             },

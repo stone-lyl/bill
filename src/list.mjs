@@ -49,10 +49,12 @@ export const getCategory = async (tradePatner, commodity) => {
                 console.log(`AI categorized "${tradePatner} - ${commodity}" as "${aiCategory}"`);
                 return aiCategory;
             }
+            return '其他';
         } catch (error) {
             console.error('Error using AI for category prediction:', error);
         }
     }
 
+    console.log(`Using rule-based matching for "${tradePatner} - ${commodity}", category: ${result}`);
     return result;
 };
