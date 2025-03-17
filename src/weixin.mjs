@@ -71,7 +71,6 @@ for (let i = 1; i < lines.length; i++) {
 }
 
 const transferWeixinFile = async () => {
-    console.log('fileArr:', fileArr);
     const homebankRecords = await fileArr
         .filter((o) => {
             return (

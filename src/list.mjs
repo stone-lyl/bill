@@ -28,6 +28,7 @@ const getRuleBasedCategory = (tradePatner, commodity) => {
     const matched = keywords.find((keyword) =>
         `${tradePatner} - ${commodity}`.includes(keyword)
     );
+    console.log(`Rule-based matching for "${tradePatner} - ${commodity}", matched: ${matched}`);
     return alipayList.get(matched) || '其他';
 };
 

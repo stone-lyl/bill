@@ -1,4 +1,4 @@
-import { personalCategories } from '../private/categories.mjs';
+import { personalCategoriesMap } from '../private/categories.mjs';
 
 /**
  * Configuration file for category mappings
@@ -10,6 +10,7 @@ export const defaultCategoryMap = new Map([
     ['车', '交通出行'],
     ['出行', '交通出行'],
     ['手机充值', '话费'],
+    ['医院', '医疗费用'],
     ['相互宝', '保险'],
     ['保', '保险'],
     ['菜鸟', '杂项'],
@@ -19,22 +20,15 @@ export const defaultCategoryMap = new Map([
     ['爱心', '捐赠'],
     ['地铁', '交通出行'],
     ['超市', '购物'],
-    ['转账备注', '人情来往'],
+    ['转账', '人情来往'],
+    ['美团', '餐饮']
 ]);
 
 // Load private category mappings from a private categories file
 export const loadPrivateCategoryMap = () => {
-    try {
-        const privateCategories = new Map();
-        personalCategories.forEach((value, key) => {
-            privateCategories.set(key, value);
-        });
-
-        return privateCategories;
-    } catch (error) {
-        console.warn('Failed to load private category mappings:', error.message);
+    if (personalCategoriesMap) {
+        return personalCategoriesMap;
     }
-
     // Return empty map if file doesn't exist or there's an error
     return new Map();
 };

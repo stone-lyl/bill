@@ -5,13 +5,32 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Launch Program (alipay)",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\alipay.js"
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "alipay"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program (weixin)",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "weixin"
+            ],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
