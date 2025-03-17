@@ -74,7 +74,7 @@ const transferWeixinFile = async () => {
     const homebankRecords = await fileArr
         .filter((o) => {
             return (
-                o['交易对方'] !== '理财通' &&
+                o['交易对方'] !== '理财通' && !o['备注'].includes('红包') &&
                 filterUnusedRecords(o['商品'], o['交易对方'])
             );
         })

@@ -46,6 +46,7 @@ export async function predictCategory(tradePartner, commodity) {
             openAIApiKey: API_KEY,
             temperature: 0.1,
             maxTokens: 500,
+            timeout: 2000,
             configuration: {
                 baseURL: API_BASE_URL,
             },
