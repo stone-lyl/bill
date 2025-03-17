@@ -47,7 +47,7 @@ export const getCategory = async (tradePatner, commodity) => {
 
             // If AI returned a valid category, use it
             if (aiCategory) {
-                console.log(`AI categorized "${tradePatner} - ${commodity}" as "${aiCategory}"`);
+                console.log(`AI categorized "${tradePatner} - ${commodity}" matched: "${aiCategory}"`);
                 return aiCategory;
             }
             return '其他';
@@ -56,6 +56,5 @@ export const getCategory = async (tradePatner, commodity) => {
         }
     }
 
-    console.log(`Using rule-based matching for "${tradePatner} - ${commodity}", category: ${result}`);
     return result;
 };
