@@ -16,6 +16,18 @@ dotenv.config({ path: path.resolve(rootDir, '.env.local') });
 const API_KEY = process.env.DEEPSEEK_API_KEY;
 const API_BASE_URL = process.env.DEEPSEEK_API_URL;
 
+// Create the model
+const model = new ChatOpenAI({
+    modelName: "gemini-1.5-flash-latest",
+    openAIApiKey: API_KEY,
+    temperature: 0.1,
+    maxTokens: 500,
+    timeout: 10000,
+    configuration: {
+        baseURL: API_BASE_URL,
+    },
+});
+
 /**
  * Predicts the category of a transaction using LangChain with DeepSeek V3 model
  * @param {string} tradePartner - The trade partner
@@ -39,18 +51,6 @@ export async function predictCategory(tradePartner, commodity) {
 
 只需回复一个最合适的类别名称，不要包含其他内容。
         `);
-
-        // Create the model
-        const model = new ChatOpenAI({
-            modelName: "gemini-2.0-flash",
-            openAIApiKey: API_KEY,
-            temperature: 0.1,
-            maxTokens: 500,
-            timeout: 2000,
-            configuration: {
-                baseURL: API_BASE_URL,
-            },
-        });
 
         // Format the prompt with the input values
         const prompt = await promptTemplate.format({
