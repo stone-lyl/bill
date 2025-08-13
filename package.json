@@ -20,7 +20,8 @@
         "gbk": "^0.1.0",
         "langchain": "^0.3.19",
         "node-fetch": "^3.3.2",
-        "qif": "^0.0.2"
+        "qif": "^0.0.2",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "eslint": "^7.32.0"
