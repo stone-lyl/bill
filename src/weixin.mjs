@@ -142,8 +142,27 @@ function readWeixinFile(filePath) {
     }
 }
 
-// Read the WeChat Pay bill file
-const filePath = path.resolve(process.cwd(), './csv/微信支付账单.csv');
+// Read the WeChat Pay bill file - check for both .csv and .xlsx extensions
+function findWeixinFile() {
+    const basePath = path.resolve(process.cwd(), './csv/微信支付账单');
+    const possibleExtensions = ['.csv', '.xlsx'];
+    
+    for (const ext of possibleExtensions) {
+        const filePath = basePath + ext;
+        if (fs.existsSync(filePath)) {
+            console.log(`Found WeChat Pay bill file: ${filePath}`);
+            return filePath;
+        }
+    }
+    
+    console.error('Could not find WeChat Pay bill file. Looking for:');
+    possibleExtensions.forEach(ext => {
+        console.error(`  - ${basePath}${ext}`);
+    });
+    process.exit(1);
+}
+
+const filePath = findWeixinFile();
 const fileArr = readWeixinFile(filePath);
 console.log(`Parsed ${fileArr.length} transaction records`);
 
