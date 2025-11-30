@@ -13,6 +13,7 @@
     "license": "ISC",
     "dependencies": {
         "@langchain/openai": "^0.4.4",
+        "bottleneck": "^2.19.5",
         "csv": "^5.5.0",
         "csv-parser": "^3.0.0",
         "date-fns": "^2.21.3",

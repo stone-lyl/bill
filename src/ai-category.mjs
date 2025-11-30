@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { validCategories } from '../private/categories.mjs';
+import Bottleneck from 'bottleneck';
 
 // Load environment variables
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +19,7 @@ const API_BASE_URL = process.env.DEEPSEEK_API_URL;
 
 // Create the model
 const model = new ChatOpenAI({
-    modelName: "gemini-1.5-flash-latest",
+    modelName: "deepseek-chat",
     openAIApiKey: API_KEY,
     temperature: 0.1,
     maxTokens: 500,
@@ -27,6 +28,15 @@ const model = new ChatOpenAI({
         baseURL: API_BASE_URL,
     },
 });
+
+// Bottleneck limiter: limits concurrency and minimal interval between starts
+const limiter = new Bottleneck({
+    maxConcurrent: Number(process.env.AI_LIMIT_CONCURRENCY || 2),
+    minTime: Number(process.env.AI_LIMIT_MIN_INTERVAL || 250),
+});
+
+// Wrap model.invoke with limiter
+const limitedInvoke = (prompt) => limiter.schedule(() => model.invoke(prompt));
 
 /**
  * Predicts the category of a transaction using LangChain with DeepSeek V3 model
@@ -59,8 +69,8 @@ export async function predictCategory(tradePartner, commodity) {
             categories: validCategories.join(', ')
         });
 
-        // Call the model
-        const response = await model.invoke(prompt);
+        // Call the model with rate limiting to avoid overwhelming the API/service
+        const response = await limitedInvoke(prompt);
 
         // Extract the category from the response
         const category = response.content.trim();
