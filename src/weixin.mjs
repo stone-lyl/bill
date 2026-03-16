@@ -4,6 +4,7 @@ import { format } from 'date-fns';
 import qif from 'qif';
 import XLSX from 'xlsx';
 import { getCategory, filterUnusedRecords } from './list.mjs';
+import { formatWeixinAmount } from './weixin-amount.mjs';
 
 // Function to detect file format and read accordingly
 function readWeixinFile(filePath) {
@@ -175,14 +176,13 @@ const transferWeixinFile = async () => {
             );
         })
         .map(async (o) => {
-            const isOutcome = o['收/支'] === '支出';
             let memo = `${o['交易类型']} - ${o['商品']}`;
             if (o['备注'] !== '/') {
                 memo += '：' + o['备注'];
             }
             const category = await getCategory(o['商品'], o['交易对方']);
             return {
-                amount: o['金额(元)'].replace('¥', isOutcome ? '-' : ''),
+                amount: formatWeixinAmount(o['金额(元)'], o['收/支']),
                 memo,
                 category,
                 payment: 0,
