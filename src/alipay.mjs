@@ -5,6 +5,7 @@ import path from 'path';
 import gbk from 'gbk';
 import fs from 'fs';
 import { format } from 'date-fns';
+import { formatAlipayAmount } from './alipay-amount.mjs';
 
 let fileStr = gbk.toString(
     'utf-8',
@@ -59,10 +60,13 @@ const transferAlipayFile = async () => {
     // Process records with category detection
     const homebankRecords = [];
     for (const o of filterRecords) {
-        const isOutcome = o['收/支'] === '支出';
         const category = await getAlipayCategory(o);
         homebankRecords.push({
-            amount: (isOutcome ? '-' : '') + o['金额（元）'],
+            amount: formatAlipayAmount(o['金额（元）'], o['收/支'], {
+                productName: o['商品名称'],
+                fundStatus: o['资金状态'],
+                transactionStatus: o['交易状态'],
+            }),
             memo: memo(o),
             category: category,
             payment: 0,
