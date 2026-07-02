@@ -16,16 +16,6 @@ test('keeps explicit Alipay income amounts positive', () => {
     assert.equal(formatAlipayAmount('45.00', '收入'), '45.00');
 });
 
-test('keeps Alipay collection records positive when direction is neutral', () => {
-    assert.equal(
-        formatAlipayAmount('6.00', '不计收支', {
-            productName: '收钱码收款',
-            fundStatus: '',
-        }),
-        '6.00'
-    );
-});
-
 test('keeps Alipay refund records positive when direction is neutral', () => {
     assert.equal(
         formatAlipayAmount('12.00', '不计收支', {

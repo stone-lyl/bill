@@ -32,7 +32,8 @@ export const formatAlipayAmount = (
         fundStatus === '已收入' ||
         transactionStatus === '退款成功' ||
         REFUND_PATTERN.test(productName) ||
-        COLLECTION_PATTERN.test(productName);
+        // 收款 但不能 是 收钱码收款
+        (COLLECTION_PATTERN.test(productName) && !productName.includes('收钱码收款'));
 
     return `${isIncome ? '' : '-'}${unsignedAmount}`;
 };
