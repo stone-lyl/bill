@@ -141,4 +141,7 @@ private/*
 # DeepSeek API credentials
 .env
 .env.local
+# Local Claude settings and drafts
+.claude/
+draft/
 .aider*
